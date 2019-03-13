@@ -3,8 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [{
   path: 'transactions',
-  // canActivate: [AuthGuard],
-  // path to module # = name of class
   loadChildren: './transactions/transactions.module#TransactionsModule'
 }];
 
