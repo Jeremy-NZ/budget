@@ -1,6 +1,7 @@
 <ng-container *ngIf="transactions?.length > 0">
   <ng-container *ngFor="let transaction of transactions">
-    <div>Spent {{transaction.amount | currency}} at {{transaction.merchant}} on {{transaction.date | date:'shortDate'}}
-    </div>
+    <p>
+      Spent {{transaction.amount | currency}} at {{transaction.merchant}} on {{transaction.date | date:'shortDate'}}
+    </p>
   </ng-container>
 </ng-container>

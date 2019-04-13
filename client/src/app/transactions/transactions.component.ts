@@ -14,7 +14,8 @@ import * as TransactionActions from './state/transaction.actions';
 export class TransactionsComponent implements OnInit {
 
   transactions$: Observable<Transaction[]>;
-
+  addingTransation: boolean = false;
+  
   constructor(private store: Store<fromTransactions.State>) { }
 
   ngOnInit() {
@@ -22,6 +23,10 @@ export class TransactionsComponent implements OnInit {
     this.store.dispatch(new TransactionActions.GetRecentTransactions());
 
     this.transactions$ = this.store.pipe(select(fromTransactions.getTransactions));
+  }
+
+  openAddTransaction() {
+    this.addingTransation = true;
   }
 
 }

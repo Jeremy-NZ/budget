@@ -1,1 +1,12 @@
+<h1>Tranactions</h1> 
+
+<h2>Recent transactions</h2>
 <app-transaction-list [transactions]="transactions$ | async"></app-transaction-list>
+
+<ng-container *ngIf="!addingTransation">
+<button (click)=openAddTransaction()>Add</button>
+</ng-container>
+
+<ng-container *ngIf="addingTransation">
+   add component here...
+</ng-container>
