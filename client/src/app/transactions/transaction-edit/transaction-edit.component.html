@@ -1,0 +1,50 @@
+<h2> {{pageTitle}} </h2>
+
+<div>
+  <form novalidate (ngSubmit)="saveTransaction()" [formGroup]="transactionForm"> 
+    <div>
+      <label for="amount">Amount </label>
+      <input type="number"
+       name="amount"
+       placeholder="Amount (required)" 
+       formControlName="amount" />
+    </div>
+
+    <div>
+      <label for="date">Date </label>
+      <input type="date"
+       name="date"
+       formControlName="date" />
+    </div>
+
+    <fieldset>
+    <div>
+      <label for="merchant">Merchant </label>
+      <input type="text"
+       name="merchant"
+       formControlName="merchant" />
+    </div>
+
+    <div>
+      <label for="bankMerchantDescription">Statement Description</label>
+      <input type="text"
+       name="text"
+       formControlName="bankMerchantDescription" />
+    </div>
+  </fieldset>
+
+  <div>
+    <span>
+      <button type="submit" [disabled]="!transactionForm.valid || !transactionForm.dirty">
+        Save
+      </button>
+    </span>
+    <span>
+      <button type="button" (click)="cancelEdit()">
+        Cancel
+      </button>
+    </span>   
+  </div>
+  
+  </form>
+</div>

@@ -19,6 +19,20 @@ export function reducer(state = initialState, action: TransactionActions): Trans
                 error: action.errorMessage,
                 transactions: []
             };
+
+        case TransactionActionTypes.CreateTransactionSuccess:
+            return {
+                ...state,
+                transactions: [...state.transactions, action.transaction],
+                currentTransactionId: action.transaction.id,
+                error: ''
+            };
+
+        case TransactionActionTypes.CreateTransactionFailure:
+            return {
+                ...state,
+                error: action.errorMessage
+            };
         default:
             return state;
     }

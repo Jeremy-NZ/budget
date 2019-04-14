@@ -25,6 +25,12 @@ export class TransactionService {
     return of([helloTransaction]);
   }
 
+  createTransaction(transaction: Transaction) : Observable<Transaction> {
+    // TODO http call. for now create an id of < 100...
+    transaction.id = Math.floor(Math.random() * Math.floor(100));
+    return of(transaction);
+  }
+
   private handleError(err) {
    // TODO: utilise logging service here. . .
     let errorMessage: string;

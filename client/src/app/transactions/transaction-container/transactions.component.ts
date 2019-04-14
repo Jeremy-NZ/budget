@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
-import { Transaction } from './transaction';
-import * as fromTransactions from './state/transaction.state';
-import * as TransactionActions from './state/transaction.actions';
+import { Transaction } from '../transaction';
+import * as fromTransactions from '../state/transaction.state';
+import * as TransactionActions from '../state/transaction.actions';
 
 @Component({
   selector: 'app-transactions',
@@ -12,9 +12,8 @@ import * as TransactionActions from './state/transaction.actions';
   styleUrls: ['./transactions.component.css']
 })
 export class TransactionsComponent implements OnInit {
-
   transactions$: Observable<Transaction[]>;
-  addingTransation: boolean = false;
+  currentTransaction$: Observable<Transaction>;
   
   constructor(private store: Store<fromTransactions.State>) { }
 
@@ -23,10 +22,10 @@ export class TransactionsComponent implements OnInit {
     this.store.dispatch(new TransactionActions.GetRecentTransactions());
 
     this.transactions$ = this.store.pipe(select(fromTransactions.getTransactions));
+    this.currentTransaction$ = this.store.pipe(select(fromTransactions.getCurrentTransaction));
   }
-
-  openAddTransaction() {
-    this.addingTransation = true;
+  
+  createTransaction(transaction: Transaction){
+    this.store.dispatch(new TransactionActions.CreateTransaction(transaction));
   }
-
 }

@@ -10,7 +10,7 @@ import { Transaction } from '../transaction';
 @Injectable()
 export class TransactionEffects {
     constructor(private actions$: Actions,
-                private transactionService: TransactionService) { }
+        private transactionService: TransactionService) { }
 
     @Effect()
     LoadProducts$ = this.actions$.pipe(
@@ -18,9 +18,21 @@ export class TransactionEffects {
         mergeMap((action: transactionActions.GetRecentTransactions) => this.transactionService.getRecentTransactions()
             .pipe(
                 map((transactions: Transaction[]) => {
-                    console.log('in effect');
-                    return new transactionActions.GetTransactionsSuccess(transactions); }),
+                    return new transactionActions.GetTransactionsSuccess(transactions);
+                }),
                 catchError(err => of(new transactionActions.GetTransactionsFailure(err)))))
     );
 
+    @Effect()
+    CreateTransaction$ = this.actions$.pipe(
+        ofType(transactionActions.TransactionActionTypes.CreateTransaction),
+        mergeMap((action: transactionActions.CreateTransaction) => this.transactionService.createTransaction(action.transaction)
+            .pipe(
+                map((transaction: Transaction) => {
+                    return new transactionActions.CreateTransactionSuccess(transaction);
+                }),
+                catchError(err => of(new transactionActions.CreateTransactionFailure(err)))
+            )
+        )
+    );
 }

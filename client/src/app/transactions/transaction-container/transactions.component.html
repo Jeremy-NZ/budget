@@ -1,0 +1,13 @@
+<h1>Transactions</h1> 
+<app-transaction-edit [currentTransaction]="currentTransaction$ | async"
+(createTransaction)="createTransaction($event)"
+(updateTransaction)="updateTransaction($event)"></app-transaction-edit>
+
+<h2>Recent transactions</h2>
+<app-transaction-list [transactions]="transactions$ | async"></app-transaction-list>
+
+
+
+
+
+                         
