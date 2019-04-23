@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 
 import { Transaction } from './transaction';
+import { TransactionMetaData } from './TransactionMetaData';
 
 @Injectable({
   providedIn: 'root'
@@ -25,14 +26,31 @@ export class TransactionService {
     return of([helloTransaction]);
   }
 
-  createTransaction(transaction: Transaction) : Observable<Transaction> {
+  getTransactionMetaData(): Observable<TransactionMetaData> {
+    const helloMetaData: TransactionMetaData = {
+      accountOwners: [
+        {
+          userId: 1,
+          name: 'Jeremy'
+        },
+        {
+          userId: 2,
+          name: 'Julie'
+        }
+      ]
+    };
+
+    return of(helloMetaData);
+  }
+
+  createTransaction(transaction: Transaction): Observable<Transaction> {
     // TODO http call. for now create an id of < 100...
     transaction.id = Math.floor(Math.random() * Math.floor(100));
     return of(transaction);
   }
 
   private handleError(err) {
-   // TODO: utilise logging service here. . .
+    // TODO: utilise logging service here. . .
     let errorMessage: string;
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
