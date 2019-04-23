@@ -8,6 +8,16 @@ import { TransactionActions, TransactionActionTypes } from '../state/transaction
  */
 export function reducer(state = initialState, action: TransactionActions): TransactionState {
     switch (action.type) {
+        case TransactionActionTypes.GetTransactionMetaDataSuccess:
+            return {
+                ...state,
+                metaData: action.transactionMetaData
+            };
+        case TransactionActionTypes.GetTransactionMetaDataFailure:
+            return {
+                ...state,
+                error: action.errorMessage,
+            };
         case TransactionActionTypes.GetTransactionsSuccess:
             return {
                 ...state,
@@ -19,12 +29,11 @@ export function reducer(state = initialState, action: TransactionActions): Trans
                 error: action.errorMessage,
                 transactions: []
             };
-
         case TransactionActionTypes.CreateTransactionSuccess:
             return {
                 ...state,
                 transactions: [...state.transactions, action.transaction],
-                currentTransactionId: action.transaction.id,
+                currentTransactionId: 0,
                 error: ''
             };
 

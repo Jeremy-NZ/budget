@@ -6,6 +6,7 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as transactionActions from './transaction.actions';
 import { TransactionService } from '../transaction.service';
 import { Transaction } from '../transaction';
+import { TransactionMetaData } from '../TransactionMetaData';
 
 @Injectable()
 export class TransactionEffects {
@@ -26,13 +27,22 @@ export class TransactionEffects {
     );
 
     @Effect()
-    LoadTransactions$ = this.actions$.pipe(
+    LoadRecentTransactions$ = this.actions$.pipe(
         ofType(transactionActions.TransactionActionTypes.GetRecentTransactions),
-        mergeMap((action: transactionActions.GetRecentTransactions) => this.transactionService.getRecentTransactions()
+        mergeMap(() => this.transactionService.getRecentTransactions()
             .pipe(
                 map((transactions: Transaction[]) => {
                     return new transactionActions.GetTransactionsSuccess(transactions);
                 }),
                 catchError(err => of(new transactionActions.GetTransactionsFailure(err)))))
+    );
+
+    @Effect()
+    LoadTransactionMetaData$ = this.actions$.pipe(
+        ofType(transactionActions.TransactionActionTypes.GetTransactionMetaData),
+        mergeMap(() => this.transactionService.getTransactionMetaData().pipe(
+                    map((metaData: TransactionMetaData) => new transactionActions.GetTransactionMetaDataSuccess(metaData)),
+                        catchError(err => of(new transactionActions.GetTransactionMetaDataFailure(err))))
+        )
     );
 }

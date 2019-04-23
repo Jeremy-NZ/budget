@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { Transaction } from '../transaction';
 import * as fromTransactions from '../state/transaction.state';
 import * as TransactionActions from '../state/transaction.actions';
+import { TransactionMetaData } from '../TransactionMetaData';
 
 @Component({
   selector: 'app-transactions',
@@ -14,18 +15,21 @@ import * as TransactionActions from '../state/transaction.actions';
 export class TransactionsComponent implements OnInit {
   transactions$: Observable<Transaction[]>;
   currentTransaction$: Observable<Transaction>;
-  
+  transactionMetaData$: Observable<TransactionMetaData>;
+
   constructor(private store: Store<fromTransactions.State>) { }
 
   ngOnInit() {
     // kick of call to get the most recent transactions
     this.store.dispatch(new TransactionActions.GetRecentTransactions());
+    this.store.dispatch(new TransactionActions.GetTransactionMetaData());
 
+    this.transactionMetaData$ = this.store.pipe(select(fromTransactions.getMetaData));
     this.transactions$ = this.store.pipe(select(fromTransactions.getTransactions));
     this.currentTransaction$ = this.store.pipe(select(fromTransactions.getCurrentTransaction));
   }
-  
-  createTransaction(transaction: Transaction){
+
+  createTransaction(transaction: Transaction) {
     this.store.dispatch(new TransactionActions.CreateTransaction(transaction));
   }
 }
