@@ -26,7 +26,7 @@ export class TransactionEffects {
     );
 
     @Effect()
-    LoadProducts$ = this.actions$.pipe(
+    LoadTransactions$ = this.actions$.pipe(
         ofType(transactionActions.TransactionActionTypes.GetRecentTransactions),
         mergeMap((action: transactionActions.GetRecentTransactions) => this.transactionService.getRecentTransactions()
             .pipe(
