@@ -10,18 +10,7 @@ import { Transaction } from '../transaction';
 @Injectable()
 export class TransactionEffects {
     constructor(private actions$: Actions,
-        private transactionService: TransactionService) { }
-
-    @Effect()
-    LoadProducts$ = this.actions$.pipe(
-        ofType(transactionActions.TransactionActionTypes.GetRecentTransactions),
-        mergeMap((action: transactionActions.GetRecentTransactions) => this.transactionService.getRecentTransactions()
-            .pipe(
-                map((transactions: Transaction[]) => {
-                    return new transactionActions.GetTransactionsSuccess(transactions);
-                }),
-                catchError(err => of(new transactionActions.GetTransactionsFailure(err)))))
-    );
+                private transactionService: TransactionService) { }
 
     @Effect()
     CreateTransaction$ = this.actions$.pipe(
@@ -34,5 +23,16 @@ export class TransactionEffects {
                 catchError(err => of(new transactionActions.CreateTransactionFailure(err)))
             )
         )
+    );
+
+    @Effect()
+    LoadProducts$ = this.actions$.pipe(
+        ofType(transactionActions.TransactionActionTypes.GetRecentTransactions),
+        mergeMap((action: transactionActions.GetRecentTransactions) => this.transactionService.getRecentTransactions()
+            .pipe(
+                map((transactions: Transaction[]) => {
+                    return new transactionActions.GetTransactionsSuccess(transactions);
+                }),
+                catchError(err => of(new transactionActions.GetTransactionsFailure(err)))))
     );
 }
