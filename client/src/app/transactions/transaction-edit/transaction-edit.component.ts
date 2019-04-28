@@ -1,32 +1,53 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from '../transaction';
+import { TransactionMetaData } from '../TransactionMetaData';
+import { AccountOwner } from '../AccountOwner';
+import { takeUntil, takeWhile } from 'rxjs/operators';
+import { TransactionSplitType } from './TransactionPaymentType';
+import { TransactionPaymentOption } from './TransactionPaymentOption';
 
 @Component({
   selector: 'app-transaction-edit',
   templateUrl: './transaction-edit.component.html',
   styleUrls: ['./transaction-edit.component.scss']
 })
-export class TransactionEditComponent implements OnInit, OnChanges {
+export class TransactionEditComponent implements OnInit, OnChanges, OnDestroy {
   pageTitle = 'Add Transaction';
   transactionForm: FormGroup;
   transaction: Transaction;
 
   @Input() currentTransaction: Transaction;
+  @Input() transactionMetaData: TransactionMetaData;
   @Output() createTransaction = new EventEmitter<Transaction>();
   @Output() updateTransaction = new EventEmitter<Transaction>();
 
+  componentActive = true;
+  displayBreakdown = false;
+  paymentOptions: TransactionPaymentOption[];
 
   constructor(private formBuilder: FormBuilder) { }
+
   ngOnInit() {
-    // TODO: update form to split amount
-    // Create the form. 
+    this.paymentOptions = this.getPaymentOptions(this.transactionMetaData.accountOwners);
+
     this.transactionForm = this.formBuilder.group({
       amount: ['', Validators.required],
       date: ['', Validators.required],
       merchant: [''],
-      bankMerchantDescription: ['']
+      bankMerchantDescription: [''],
+      paymentOption: [this.paymentOptions[0]],
+      // todo init array here
+      transactionSplit: ['', Validators.required]
     });
+
+    this.transactionForm.get('amount').valueChanges
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(() => this.onTransactionSplitChange());
+
+    this.transactionForm.get('paymentOption').valueChanges
+      .pipe(takeWhile(() => this.componentActive))
+      .subscribe(() => this.onTransactionSplitChange());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -35,6 +56,10 @@ export class TransactionEditComponent implements OnInit, OnChanges {
       const transaction: any = changes.currentTransaction.currentValue as Transaction;
       this.displayTransaction(transaction);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.componentActive = false;
   }
 
   displayTransaction(transaction: Transaction | null): void {
@@ -77,4 +102,49 @@ export class TransactionEditComponent implements OnInit, OnChanges {
     }
   }
 
+  private getPaymentOptions(accountOwners: AccountOwner[]): TransactionPaymentOption[] {
+    const options: TransactionPaymentOption[] = [];
+    accountOwners.forEach(accountOwner => {
+      options.push({
+        description: accountOwner.name,
+        displayBreakdown: false,
+        type: TransactionSplitType.none,
+        userId: accountOwner.userId
+      });
+    });
+
+    options.push({ description: 'Even split', displayBreakdown: false, type: TransactionSplitType.even});
+    options.push({ description: 'Odd split', displayBreakdown: true, type: TransactionSplitType.odd});
+
+    return options;
+  }
+
+  // TODO refactor this method to be more granular and to avoid transactionForm.setControl?
+  private onTransactionSplitChange(): void {
+    // get the transaction amount
+    const amount: number = this.transactionForm.get('amount').value;
+    const paymentOption = this.transactionForm.get('paymentOption').value as TransactionPaymentOption;
+    this.displayBreakdown = paymentOption.displayBreakdown;
+    const transactionSplit: FormArray = this.formBuilder.array([]);
+
+    if (paymentOption.type === TransactionSplitType.none) {
+      transactionSplit.push(this.formBuilder.group({
+        amount,
+        name: paymentOption.description,
+        userId: paymentOption.userId
+      }));
+    } else {
+      // todo address rounding issues. e.g. 100 / 3
+      const amountPerPerson = amount / this.transactionMetaData.accountOwners.length;
+      this.transactionMetaData.accountOwners.forEach(accountOwner => {
+        const split = this.formBuilder.group({
+          amount: amountPerPerson,
+          name: accountOwner.name,
+          userId: accountOwner.userId
+        });
+        transactionSplit.push(split);
+      });
+    }
+    this.transactionForm.setControl('transactionSplit', transactionSplit);
+  }
 }
