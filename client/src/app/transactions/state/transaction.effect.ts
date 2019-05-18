@@ -6,7 +6,7 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as transactionActions from './transaction.actions';
 import { TransactionService } from '../transaction.service';
 import { Transaction } from '../transaction';
-import { TransactionMetaData } from '../TransactionMetaData';
+import { AccountMetaData } from '../AccountsMetaData';
 
 @Injectable()
 export class TransactionEffects {
@@ -41,7 +41,7 @@ export class TransactionEffects {
     LoadTransactionMetaData$ = this.actions$.pipe(
         ofType(transactionActions.TransactionActionTypes.GetTransactionMetaData),
         mergeMap(() => this.transactionService.getTransactionMetaData().pipe(
-                    map((metaData: TransactionMetaData) => new transactionActions.GetTransactionMetaDataSuccess(metaData)),
+                    map((metaData: AccountMetaData[]) => new transactionActions.GetTransactionMetaDataSuccess(metaData)),
                         catchError(err => of(new transactionActions.GetTransactionMetaDataFailure(err))))
         )
     );

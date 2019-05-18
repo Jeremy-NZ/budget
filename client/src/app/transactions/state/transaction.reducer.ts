@@ -11,7 +11,7 @@ export function reducer(state = initialState, action: TransactionActions): Trans
         case TransactionActionTypes.GetTransactionMetaDataSuccess:
             return {
                 ...state,
-                metaData: action.transactionMetaData
+                accounts: action.accounts
             };
         case TransactionActionTypes.GetTransactionMetaDataFailure:
             return {

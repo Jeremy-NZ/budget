@@ -2,16 +2,25 @@
 
 <div>
   <form novalidate (ngSubmit)="saveTransaction()" [formGroup]="transactionForm">
-    <div>
-      <label for="amount">Amount </label>
-      <input type="number" name="amount" placeholder="Amount (required)" formControlName="amount" />
-    </div>
+    <fieldset>
+      <label for="account">Account: </label>
+      <select formControlName="account">
+        <option *ngFor="let account of accountsMetaData" [ngValue]="account">{{ account.name }}
+        </option>
+      </select>
+    </fieldset>
 
-    <div>
-      <label for="date">Date </label>
-      <input type="date" name="date" formControlName="date" />
-    </div>
+    <fieldset>
+      <div>
+        <label for="amount">Amount </label>
+        <input type="number" name="amount" placeholder="Amount (required)" formControlName="amount" />
+      </div>
 
+      <div>
+        <label for="date">Date </label>
+        <input type="date" name="date" formControlName="date" />
+      </div>
+    </fieldset>
     <fieldset>
       <div>
         <label for="merchant">Merchant </label>
@@ -24,13 +33,13 @@
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset *ngIf="displayPaidBy">
       <label for="paymentOption">Paid by: </label>
       <select formControlName="paymentOption">
         <option *ngFor="let paymentOption of paymentOptions" [ngValue]="paymentOption">{{ paymentOption.description }}
         </option>
       </select>
-
+      
       <ng-container *ngIf="displayBreakdown">
         <div formArrayName="transactionSplit"
           *ngFor="let transactionSplit of transactionForm.get('transactionSplit').controls; let i = index;">
@@ -44,19 +53,19 @@
         </div>
       </ng-container>
     </fieldset>
-
-    <div>
-      <span>
-        <button type="submit" [disabled]="!transactionForm.valid || !transactionForm.dirty">
-          Save
-        </button>
-      </span>
-      <span>
-        <button type="button" (click)="cancelEdit()">
-          Cancel
-        </button>
-      </span>
-    </div>
-
+    <fieldset>
+      <div>
+        <span>
+          <button type="submit" [disabled]="!transactionForm.valid || !transactionForm.dirty">
+            Save
+          </button>
+        </span>
+        <span>
+          <button type="button" (click)="cancelEdit()">
+            Cancel
+          </button>
+        </span>
+      </div>
+    </fieldset>
   </form>
 </div>

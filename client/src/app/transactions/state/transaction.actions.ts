@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Transaction } from '../transaction';
-import { TransactionMetaData } from '../TransactionMetaData';
+import { AccountMetaData } from '../AccountsMetaData';
 
 export enum TransactionActionTypes {
     GetRecentTransactions = '[Transaction] Get Recent Transactions',
@@ -38,7 +38,7 @@ export class GetTransactionMetaData implements Action {
 export class GetTransactionMetaDataSuccess implements Action {
     readonly type = TransactionActionTypes.GetTransactionMetaDataSuccess;
 
-    constructor(public transactionMetaData: TransactionMetaData) { }
+    constructor(public accounts: AccountMetaData[]) { }
 }
 
 export class GetTransactionMetaDataFailure implements Action {

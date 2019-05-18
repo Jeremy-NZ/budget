@@ -2,7 +2,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { Transaction } from '../transaction';
 import * as fromRoot from '../../state/app.state';
-import { TransactionMetaData } from '../TransactionMetaData';
+import { AccountMetaData } from '../AccountsMetaData';
+
+
 
 /**
  * Extend the base state object as the transaction module is lazy loaded.
@@ -13,14 +15,14 @@ export interface State extends fromRoot.State {
 
 export interface TransactionState {
     currentTransactionId: number;
-    metaData: TransactionMetaData;
+    accounts: AccountMetaData[];
     transactions: Transaction[];
     error: string;
 }
 
 export const initialState: TransactionState = {
     currentTransactionId: null,
-    metaData: null,
+    accounts: [],
     transactions: [],
     error: ''
 };
@@ -29,7 +31,7 @@ const getTransactionFeatureState = createFeatureSelector<TransactionState>('tran
 
 export const getTransactions = createSelector(getTransactionFeatureState, state => state.transactions);
 
-export const getMetaData = createSelector(getTransactionFeatureState, state => state.metaData);
+export const getAccountsMetaData = createSelector(getTransactionFeatureState, state => state.accounts);
 
 export const getCurrentTransactionId = createSelector(getTransactionFeatureState, state => state.currentTransactionId);
 

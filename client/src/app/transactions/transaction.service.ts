@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-
+import { delay } from 'rxjs/internal/operators';
 import { Transaction } from './transaction';
-import { TransactionMetaData } from './TransactionMetaData';
+import { AccountType, AccountMetaData } from './AccountsMetaData';
 
 @Injectable({
   providedIn: 'root'
@@ -23,30 +23,47 @@ export class TransactionService {
       split: []
     };
 
-    return of([helloTransaction]);
+    return of([helloTransaction]).pipe(delay(1000));;
   }
 
-  getTransactionMetaData(): Observable<TransactionMetaData> {
-    const helloMetaData: TransactionMetaData = {
-      accountOwners: [
+  getTransactionMetaData(): Observable<AccountMetaData[]> {
+    const helloMetaData: AccountMetaData[] = [
         {
-          userId: 1,
-          name: 'Jeremy'
+          name: 'Joint Credit Card',
+          owners: [
+            {
+              userId: 1,
+              name: 'Jeremy'
+            },
+            {
+              userId: 2,
+              name: 'Julie'
+            }
+          ],
+          id: 1,
+          type: AccountType.credit
         },
         {
-          userId: 2,
-          name: 'Julie'
+          name: 'Checking',
+          owners: [
+            {
+              userId: 1,
+              name: 'Jeremy'
+            }
+          ],
+          id: 2,
+          type: AccountType.debit
         }
-      ]
-    };
+      ];
 
-    return of(helloMetaData);
+    // simulate call to server
+    return of(helloMetaData).pipe(delay(1000));
   }
 
   createTransaction(transaction: Transaction): Observable<Transaction> {
     // TODO http call. for now create an id of < 100...
     transaction.id = Math.floor(Math.random() * Math.floor(100));
-    return of(transaction);
+    return of(transaction).pipe(delay(1000));;
   }
 
   private handleError(err) {
