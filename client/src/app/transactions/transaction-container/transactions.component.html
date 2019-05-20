@@ -1,8 +1,0 @@
-<app-transaction-edit
-[currentTransaction]="currentTransaction$ | async"
-[accountsMetaData]="accountsMetaData$ | async"
-(createTransaction)="createTransaction($event)"
-(updateTransaction)="updateTransaction($event)"></app-transaction-edit>
-
-<h2>Recent transactions</h2>
-<app-transaction-list [transactions]="transactions$ | async"></app-transaction-list>

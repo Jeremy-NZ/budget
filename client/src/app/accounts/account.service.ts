@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators';
-import { Transaction } from './transaction';
-import { AccountType, AccountMetaData } from './AccountsMetaData';
+import { ITransaction } from './transaction';
+import { Account, CreditAccount, DebitAccount } from './account';
+import { AccountType } from './account-type';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionService {
+export class AccountService {
 
   constructor(private http: HttpClient) { }
 
-  getRecentTransactions(): Observable<Transaction[]> {
-    const helloTransaction: Transaction = {
+  getRecentTransactions(): Observable<ITransaction[]> {
+    const helloTransaction: ITransaction = {
+      accountId: 1,
       id: 0,
       amount: 11,
       date: new Date(),
@@ -26,41 +28,46 @@ export class TransactionService {
     return of([helloTransaction]).pipe(delay(1000));;
   }
 
-  getTransactionMetaData(): Observable<AccountMetaData[]> {
-    const helloMetaData: AccountMetaData[] = [
-        {
-          name: 'Joint Credit Card',
-          owners: [
-            {
-              userId: 1,
-              name: 'Jeremy'
-            },
-            {
-              userId: 2,
-              name: 'Julie'
-            }
-          ],
-          id: 1,
-          type: AccountType.credit
-        },
-        {
-          name: 'Checking',
-          owners: [
-            {
-              userId: 1,
-              name: 'Jeremy'
-            }
-          ],
-          id: 2,
-          type: AccountType.debit
-        }
-      ];
+  getAccounts(): Observable<Account[]> {
+    const jointCreditAccount: CreditAccount = {
+        availableCredit: 9000,
+        balance: 400,
+        creditLimit: 10000,
+        name: 'Joint Credit Card',
+        owners: [
+          {
+            userId: 1,
+            name: 'Jeremy'
+          },
+          {
+            userId: 2,
+            name: 'Julie'
+          }
+        ],
+        id: 1,
+        type: AccountType.credit
+      };
+
+    const checkingAccount: DebitAccount = {
+        balance: 100,
+        name: 'Checking',
+        owners: [
+          {
+            userId: 1,
+            name: 'Jeremy'
+          }
+        ],
+        id: 2,
+        type: AccountType.debit
+      };
+
+    const helloMetaData: Account[] = [ jointCreditAccount, checkingAccount ];
 
     // simulate call to server
-    return of(helloMetaData).pipe(delay(1000));
+    return of(helloMetaData).pipe(delay(2000));
   }
 
-  createTransaction(transaction: Transaction): Observable<Transaction> {
+  createTransaction(transaction: ITransaction): Observable<ITransaction> {
     // TODO http call. for now create an id of < 100...
     transaction.id = Math.floor(Math.random() * Math.floor(100));
     return of(transaction).pipe(delay(1000));;

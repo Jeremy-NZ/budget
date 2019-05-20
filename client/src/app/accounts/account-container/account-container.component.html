@@ -1,0 +1,10 @@
+<app-account-selector [accounts]="accounts$ | async" (selectAccount)="selectAccount($event)"></app-account-selector>
+
+<app-account-overview [account]="currentAccount$ | async"></app-account-overview>
+
+<app-transaction-edit [currentTransaction]="currentTransaction$ | async" [account]="currentAccount$ | async"
+    (createTransaction)="createTransaction($event)" (updateTransaction)="updateTransaction($event)">
+</app-transaction-edit>
+
+<h2>Recent transactions</h2>
+<app-transaction-list [transactions]="transactions$ | async"></app-transaction-list>

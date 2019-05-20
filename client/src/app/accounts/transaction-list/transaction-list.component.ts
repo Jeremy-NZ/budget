@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Transaction } from '../transaction';
+import { ITransaction } from '../transaction';
 
 @Component({
   selector: 'app-transaction-list',
@@ -8,7 +8,7 @@ import { Transaction } from '../transaction';
 })
 export class TransactionListComponent implements OnInit {
 
-  @Input() transactions: Transaction[] ;
+  @Input() transactions: ITransaction[] ;
 
   constructor() { }
 

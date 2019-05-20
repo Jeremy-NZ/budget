@@ -1,0 +1,7 @@
+<form [formGroup]="accountSelectorForm">
+  <label for="account">Account: </label>
+  <select formControlName="account">
+    <option *ngFor="let account of accounts" [ngValue]="account">{{ account.name }}
+    </option>
+  </select>
+</form>

@@ -3,14 +3,6 @@
 <div>
   <form novalidate (ngSubmit)="saveTransaction()" [formGroup]="transactionForm">
     <fieldset>
-      <label for="account">Account: </label>
-      <select formControlName="account">
-        <option *ngFor="let account of accountsMetaData" [ngValue]="account">{{ account.name }}
-        </option>
-      </select>
-    </fieldset>
-
-    <fieldset>
       <div>
         <label for="amount">Amount </label>
         <input type="number" name="amount" placeholder="Amount (required)" formControlName="amount" />
