@@ -3,8 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { delay } from 'rxjs/internal/operators';
 import { ITransaction } from './transaction';
-import { Account, CreditAccount, DebitAccount } from './account';
+import { Account } from './account';
+import { DebitAccount } from "./debit-account";
+import { CreditAccount } from "./credit-account";
 import { AccountType } from './account-type';
+import { AccountOwner } from './account-owner';
 
 @Injectable({
   providedIn: 'root'
@@ -29,37 +32,21 @@ export class AccountService {
   }
 
   getAccounts(): Observable<Account[]> {
-    const jointCreditAccount: CreditAccount = {
-        availableCredit: 9000,
-        balance: 400,
-        creditLimit: 10000,
-        name: 'Joint Credit Card',
-        owners: [
-          {
-            userId: 1,
-            name: 'Jeremy'
-          },
-          {
-            userId: 2,
-            name: 'Julie'
-          }
-        ],
-        id: 1,
-        type: AccountType.credit
-      };
+    const jointCreditAccount: CreditAccount = new CreditAccount();
+    jointCreditAccount.availableCredit = 9000;
+    jointCreditAccount.balance = 400;
+    jointCreditAccount.creditLimit = 10000;
+    jointCreditAccount.name = 'Joint Credit Card';
+    jointCreditAccount.owners = [{userId: 1, name : 'Jeremy'}, {userId: 2, name : 'Julie'} ];
+    jointCreditAccount.id = 1;
+    jointCreditAccount. type = AccountType.credit;
 
-    const checkingAccount: DebitAccount = {
-        balance: 100,
-        name: 'Checking',
-        owners: [
-          {
-            userId: 1,
-            name: 'Jeremy'
-          }
-        ],
-        id: 2,
-        type: AccountType.debit
-      };
+    const checkingAccount = new DebitAccount();
+    checkingAccount.balance = 100;
+    checkingAccount.name = 'Checking';
+    checkingAccount.owners = [{userId: 1, name : 'Jeremy'}, {userId: 2, name : 'Julie'} ];
+    checkingAccount.id = 2;
+    checkingAccount.type = AccountType.debit;
 
     const helloMetaData: Account[] = [ jointCreditAccount, checkingAccount ];
 
